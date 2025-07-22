@@ -94,54 +94,54 @@ if model_type == "BERT+Attention":
             st.warning("⚠️ Please enter a news article.")
 
 # ========== BiLSTM+Attention ==========
-elif model_type == "BiLSTM+Attention":
-    st.write("🔍 BiLSTM+Attention selected.")
-
-    vocab_path = os.path.join(os.path.dirname(__file__), '../saved_models/vocab.npy')
-    lstm_model_path = os.path.join(os.path.dirname(__file__), '../saved_models/bilstm_model.pt')
-
-    try:
-        vocab = np.load(vocab_path, allow_pickle=True).item()
-        st.success("✅ Vocabulary loaded.")
-    except Exception as e:
-        st.error(f"❌ Error loading vocabulary: {e}")
-        st.stop()
-
-    try:
-        model = BiLSTMAttention(vocab_size=len(vocab), embed_dim=128, hidden_dim=64, n_classes=2, pad_idx=0)
-        model.load_state_dict(torch.load(lstm_model_path, map_location=torch.device('cpu')))
-        model.eval()
-        st.success("✅ BiLSTM model loaded.")
-    except Exception as e:
-        st.error(f"❌ Error loading LSTM model: {e}")
-        st.stop()
-
-    if st.button("Check", key="check_lstm"):
-        if news.strip():
-            x = encode_texts([news], vocab, 128)
-            x_tensor = torch.tensor(x, dtype=torch.long)
-
-            with torch.no_grad():
-                logits, attn_weights = model(x_tensor)
-                prediction = torch.argmax(logits, dim=1).item()
-
-            label = "📰 Prediction: REAL ✅" if prediction == 0 else "📰 Prediction: FAKE ❌"
-            st.success(label)
-
-            st.markdown("#### 🎯 Attention Heatmap")
-            fig = plot_attention(news, attn_weights.squeeze(0))
-            st.pyplot(fig)
-
-            buf = io.BytesIO()
-            fig.savefig(buf, format="png")
-            st.download_button(
-                "📥 Download Heatmap",
-                buf.getvalue(),
-                file_name="lstm_attention_heatmap.png",
-                mime="image/png"
-            )
-
-            st.markdown("#### ✨ Attention-Weighted Text")
-            st.write(highlight_text(news, attn_weights.squeeze(0)))
-        else:
-            st.warning("⚠️ Please enter a news article.")
+# elif model_type == "BiLSTM+Attention":
+#     st.write("🔍 BiLSTM+Attention selected.")
+# 
+#     vocab_path = os.path.join(os.path.dirname(__file__), '../saved_models/vocab.npy')
+#     lstm_model_path = os.path.join(os.path.dirname(__file__), '../saved_models/bilstm_model.pt')
+# 
+#     try:
+#         vocab = np.load(vocab_path, allow_pickle=True).item()
+#         st.success("✅ Vocabulary loaded.")
+#     except Exception as e:
+#         st.error(f"❌ Error loading vocabulary: {e}")
+#         st.stop()
+# 
+#     try:
+#         model = BiLSTMAttention(vocab_size=len(vocab), embed_dim=128, hidden_dim=64, n_classes=2, pad_idx=0)
+#         model.load_state_dict(torch.load(lstm_model_path, map_location=torch.device('cpu')))
+#         model.eval()
+#         st.success("✅ BiLSTM model loaded.")
+#     except Exception as e:
+#         st.error(f"❌ Error loading LSTM model: {e}")
+#         st.stop()
+# 
+#     if st.button("Check", key="check_lstm"):
+#         if news.strip():
+#             x = encode_texts([news], vocab, 128)
+#             x_tensor = torch.tensor(x, dtype=torch.long)
+# 
+#             with torch.no_grad():
+#                 logits, attn_weights = model(x_tensor)
+#                 prediction = torch.argmax(logits, dim=1).item()
+# 
+#             label = "📰 Prediction: REAL ✅" if prediction == 0 else "📰 Prediction: FAKE ❌"
+#             st.success(label)
+# 
+#             st.markdown("#### 🎯 Attention Heatmap")
+#             fig = plot_attention(news, attn_weights.squeeze(0))
+#             st.pyplot(fig)
+# 
+#             buf = io.BytesIO()
+#             fig.savefig(buf, format="png")
+#             st.download_button(
+#                 "📥 Download Heatmap",
+#                 buf.getvalue(),
+#                 file_name="lstm_attention_heatmap.png",
+#                 mime="image/png"
+#             )
+# 
+#             st.markdown("#### ✨ Attention-Weighted Text")
+#             st.write(highlight_text(news, attn_weights.squeeze(0)))
+#         else:
+#             st.warning("⚠️ Please enter a news article.")
