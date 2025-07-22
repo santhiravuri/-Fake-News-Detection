@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from transformers import BertTokenizer
 from src.model_bert_attn import BertWithAttention
-from src.model_bilstm_attn import BiLSTMAttention
+# from src.model_bilstm_attn import BiLSTMAttention   # 🔒 BiLSTM import commented
 from src.explain import plot_attention, highlight_text, lime_explain
 from src.data_utils import encode_texts
 from PIL import Image
@@ -28,7 +28,8 @@ else:
     st.title("📰 Context-Aware Fake News Detection")
 
 # Choose model
-model_type = st.selectbox("Choose Model", ("BERT+Attention", "BiLSTM+Attention"))
+# model_type = st.selectbox("Choose Model", ("BERT+Attention", "BiLSTM+Attention"))  # 🔒 Removed BiLSTM option
+model_type = st.selectbox("Choose Model", ("BERT+Attention",))  # ✅ Only BERT for now
 news = st.text_area("Paste news article here:")
 
 # ========== BERT+Attention ==========
@@ -54,7 +55,6 @@ if model_type == "BERT+Attention":
             encoding = tokenizer(news, return_tensors='pt', truncation=True, padding='max_length', max_length=128)
             input_ids = encoding['input_ids'].to(device)
             attention_mask = encoding['attention_mask'].to(device)
-
 
             with torch.no_grad():
                 logits, attn_weights = model(input_ids, attention_mask)
@@ -93,7 +93,7 @@ if model_type == "BERT+Attention":
         else:
             st.warning("⚠️ Please enter a news article.")
 
-# ========== BiLSTM+Attention ==========
+# ========== BiLSTM+Attention (DISABLED) ==========
 # elif model_type == "BiLSTM+Attention":
 #     st.write("🔍 BiLSTM+Attention selected.")
 # 
