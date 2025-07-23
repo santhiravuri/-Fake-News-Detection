@@ -29,7 +29,8 @@ else:
 
 # Choose model
 # model_type = st.selectbox("Choose Model", ("BERT+Attention", "BiLSTM+Attention"))  # 🔒 Removed BiLSTM option
-model_type = st.selectbox("Choose Model", ("BERT+Attention",))  # ✅ Only BERT for now
+#model_type = st.selectbox("Choose Model", ("BERT+Attention",))  # ✅ Only BERT for now
+model_type = "BERT+Attention" 
 news = st.text_area("Paste news article here:")
 
 # ========== BERT+Attention ==========
